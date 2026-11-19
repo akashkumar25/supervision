@@ -3243,3 +3243,34 @@ class TestTraceAnnotatorPendingTracks:
         )
 
         assert tuple(scene[50, 60]) == Color.BLUE.as_bgr()
+
+
+class TestOpenCvAnnotatorsOnBgraScene:
+    """OpenCV-drawn annotators leave drawn pixels opaque on a BGRA scene."""
+
+    @pytest.mark.parametrize(
+        "annotator",
+        [
+            pytest.param(BoxAnnotator(), id="box"),
+            pytest.param(BoxCornerAnnotator(), id="box-corner"),
+            pytest.param(CircleAnnotator(), id="circle"),
+            pytest.param(ColorAnnotator(opacity=1.0), id="color"),
+            pytest.param(DotAnnotator(), id="dot"),
+            pytest.param(EllipseAnnotator(), id="ellipse"),
+            pytest.param(PercentageBarAnnotator(), id="percentage-bar"),
+            pytest.param(RoundBoxAnnotator(), id="round-box"),
+            pytest.param(TriangleAnnotator(), id="triangle"),
+        ],
+    )
+    def test_drawn_pixels_are_opaque(self, annotator: Any) -> None:
+        """Every pixel whose color changed has alpha 255 on a transparent canvas."""
+        scene = np.zeros((120, 160, 4), dtype=np.uint8)
+        detections = _create_detections(
+            xyxy=[[20, 20, 100, 90]], class_id=[0], confidence=[0.8]
+        )
+
+        result = annotator.annotate(scene.copy(), detections)
+
+        drawn = np.any(result[..., :3] != 0, axis=-1)
+        assert drawn.any()
+        assert np.all(result[..., 3][drawn] == 255)

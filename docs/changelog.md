@@ -7,7 +7,7 @@ date_modified: 2026-11-18
 
 ### Unreleased <small>upcoming</small>
 
--
+- Fixed `sv.BoxAnnotator`, `sv.BoxCornerAnnotator`, `sv.CircleAnnotator`, `sv.ColorAnnotator`, `sv.DotAnnotator`, `sv.EllipseAnnotator`, `sv.PercentageBarAnnotator`, `sv.PolygonAnnotator`, `sv.RoundBoxAnnotator`, `sv.TriangleAnnotator`, `sv.draw_rectangle`, `sv.draw_filled_rectangle`, `sv.draw_polygon` and `sv.draw_text` drawing invisible pixels on BGRA scenes. The drawn color now gets an opaque alpha instead of the 0 OpenCV pads in. ([#3030](https://github.com/roboflow/supervision/issues/3030))
 
 ### 0.32.0 <small>Nov 18, 2026</small>
 
